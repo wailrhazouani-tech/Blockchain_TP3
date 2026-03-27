@@ -1001,11 +1001,11 @@
       "events": {},
       "links": {},
       "address": "0xB89E40Ef8a1EE41495e188E18F4dc6e591fbf548",
-      "transactionHash": "0xf60a103bdf41b32a100853c5af8e82b54296162a95b72dbbe552c84d3479f5df"
+      "transactionHash": "0xba3ea2cc562407324a473abf590c8085ec0e382e1a2f6af7e1da6fd439b82fe5"
     }
   },
   "schemaVersion": "3.4.16",
-  "updatedAt": "2026-02-10T18:00:40.505Z",
+  "updatedAt": "2026-03-27T18:27:42.695Z",
   "networkType": "ethereum",
   "devdoc": {
     "kind": "dev",
