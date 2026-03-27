@@ -1292,11 +1292,11 @@
       "events": {},
       "links": {},
       "address": "0x2F648b24db7E3E9f4815C77b355643d363B80291",
-      "transactionHash": "0x8b70c043999dc868a1fda4f9b17c891af13c7d9d4f1cf19dab54dab3a47e5141"
+      "transactionHash": "0x11225bc3960e8a983b7cb585ac07740319bf84e5eede604b71bde065efab67fb"
     }
   },
   "schemaVersion": "3.4.16",
-  "updatedAt": "2026-02-10T18:00:40.605Z",
+  "updatedAt": "2026-03-27T18:27:42.794Z",
   "networkType": "ethereum",
   "devdoc": {
     "kind": "dev",
