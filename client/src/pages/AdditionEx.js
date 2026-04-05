@@ -1,25 +1,22 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom'; // Ensure this is imported
+import { Link } from 'react-router-dom';
 import AdditionContract from '../contracts/AdditionContract.json';
 import BlockchainInfo from '../components/BlockchainInfo';
 import TransactionInfo from '../components/TransactionInfo';
 
 const AdditionEx = ({ web3, account }) => {
   const [contract, setContract] = useState(null);
+  const [contractAddr, setContractAddr] = useState('');
   const [stateVars, setStateVars] = useState({ n1: 0, n2: 0 });
   const [newVars, setNewVars] = useState({ n1: '', n2: '' });
   const [pureInputs, setPureInputs] = useState({ a: '', b: '' });
   const [result, setResult] = useState(null);
-  const [lastTx, setLastTx] = useState({ hash: '', status: false });
+  const [lastReceipt, setLastReceipt] = useState(null); // Changed from hash to full receipt
 
   const loadState = async (instance) => {
-    try {
-      const n1 = await instance.methods.number1().call();
-      const n2 = await instance.methods.number2().call();
-      setStateVars({ n1, n2 });
-    } catch (e) {
-      console.error("Could not read state", e);
-    }
+    const n1 = await instance.methods.number1().call();
+    const n2 = await instance.methods.number2().call();
+    setStateVars({ n1, n2 });
   };
 
   useEffect(() => {
@@ -30,6 +27,7 @@ const AdditionEx = ({ web3, account }) => {
         if (deployedNetwork) {
           const instance = new web3.eth.Contract(AdditionContract.abi, deployedNetwork.address);
           setContract(instance);
+          setContractAddr(deployedNetwork.address);
           loadState(instance);
         }
       };
@@ -37,11 +35,13 @@ const AdditionEx = ({ web3, account }) => {
     }
   }, [web3]);
 
+  // UPDATE STATE (Creates a real transaction)
   const handleUpdateState = async () => {
     if (newVars.n1 === '' || newVars.n2 === '') return;
     try {
+      // We capture the full receipt here
       const receipt = await contract.methods.setNumbers(newVars.n1, newVars.n2).send({ from: account });
-      setLastTx({ hash: receipt.transactionHash, status: receipt.status });
+      setLastReceipt(receipt); 
       await loadState(contract);
     } catch (error) {
       console.error("Transaction failed", error);
@@ -60,40 +60,30 @@ const AdditionEx = ({ web3, account }) => {
 
   return (
     <div className="space-y-6">
-      {/* 1. BACK BUTTON */}
-      <div className="flex justify-start">
-        <Link 
-          to="/" 
-          className="flex items-center text-sm font-semibold text-slate-500 hover:text-indigo-600 transition group"
-        >
+      <div className="flex justify-between items-center">
+        <Link to="/" className="flex items-center text-sm font-semibold text-slate-500 hover:text-indigo-600 transition group">
           <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2 group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
           Back to Dashboard
         </Link>
+        <span className="text-[10px] font-mono bg-slate-100 px-3 py-1 rounded-full text-slate-500">
+          Contract: {contractAddr}
+        </span>
       </div>
 
-      <BlockchainInfo account={account} />
+      <BlockchainInfo web3={web3} account={account} />
 
       <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-200">
         <h2 className="text-2xl font-bold text-indigo-800 mb-6 border-b pb-4">Exercise 1: Addition & Setters</h2>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          
-          {/* SETTERS SECTION */}
+          {/* WRITE SECTION */}
           <div className="space-y-4 p-4 bg-slate-50 rounded-xl border border-slate-100">
             <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest">Update Values</h3>
-            <input 
-              type="number" placeholder="New N1" 
-              className="w-full p-2 border rounded-lg outline-none focus:ring-2 focus:ring-indigo-500"
-              onChange={(e) => setNewVars({...newVars, n1: e.target.value})}
-            />
-            <input 
-              type="number" placeholder="New N2" 
-              className="w-full p-2 border rounded-lg outline-none focus:ring-2 focus:ring-indigo-500"
-              onChange={(e) => setNewVars({...newVars, n2: e.target.value})}
-            />
-            <button onClick={handleUpdateState} className="w-full bg-indigo-600 text-white py-2 rounded-lg font-bold hover:bg-indigo-700 transition">
+            <input type="number" placeholder="New N1" className="w-full p-2 border rounded-lg" onChange={(e) => setNewVars({...newVars, n1: e.target.value})}/>
+            <input type="number" placeholder="New N2" className="w-full p-2 border rounded-lg" onChange={(e) => setNewVars({...newVars, n2: e.target.value})}/>
+            <button onClick={handleUpdateState} className="w-full bg-indigo-600 text-white py-2 rounded-lg font-bold hover:bg-indigo-700 transition shadow-lg shadow-indigo-200">
               Update Blockchain
             </button>
           </div>
@@ -101,7 +91,7 @@ const AdditionEx = ({ web3, account }) => {
           {/* READ SECTION */}
           <div className="space-y-4">
             <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest">Current State</h3>
-            <div className="p-4 border border-indigo-100 rounded-xl bg-indigo-50/30">
+            <div className="p-4 border border-indigo-100 rounded-xl bg-indigo-50/30 text-center">
               <p className="text-sm">N1: <span className="font-mono font-bold text-indigo-600">{stateVars.n1}</span></p>
               <p className="text-sm">N2: <span className="font-mono font-bold text-indigo-600">{stateVars.n2}</span></p>
             </div>
@@ -124,13 +114,14 @@ const AdditionEx = ({ web3, account }) => {
         </div>
 
         {result && (
-          <div className="mt-8 p-6 bg-indigo-900 text-white rounded-2xl flex justify-between items-center shadow-lg">
-            <span className="text-indigo-300 font-medium">{result.type}</span>
-            <span className="text-4xl font-black">{result.value}</span>
+          <div className="mt-8 p-6 bg-slate-900 text-white rounded-2xl flex justify-between items-center border border-indigo-500/30">
+            <span className="text-indigo-400 font-medium tracking-tight">{result.type}</span>
+            <span className="text-4xl font-black text-indigo-400">{result.value}</span>
           </div>
         )}
 
-        <TransactionInfo txHash={lastTx.hash} status={lastTx.status} />
+        {/* Passing the full receipt now */}
+        <TransactionInfo txReceipt={lastReceipt} />
       </div>
     </div>
   );
