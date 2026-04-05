@@ -7,7 +7,7 @@ import Navbar from './components/Navbar';
 import Home from './components/Home';
 
 // Exercise Pages
-// import AdditionEx from './pages/AdditionEx';
+import AdditionEx from './pages/AdditionEx';
 // import CryptoEx from './pages/CryptoEx';
 // import StringsEx from './pages/StringsEx';
 // import SignEx from './pages/SignEx';
@@ -54,6 +54,7 @@ function App() {
         <main className="max-w-5xl mx-auto px-6 py-10">
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/exercice-1" element={<AdditionEx web3={web3} account={account} />} />
             
           </Routes>
         </main>

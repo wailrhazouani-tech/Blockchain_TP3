@@ -1,13 +1,19 @@
 import React from 'react';
 
-const TransactionInfo = ({ txHash, gasUsed, status }) => {
+const TransactionInfo = ({ txHash, status }) => {
   if (!txHash) return null;
+
   return (
-    <div className="bg-gray-900 text-green-400 p-4 rounded-lg font-mono text-xs mt-6 shadow-inner">
-      <p className="mb-1 uppercase font-bold text-gray-500">Last Transaction Receipt</p>
-      <p><span className="text-blue-400">Hash:</span> {txHash}</p>
-      <p><span className="text-blue-400">Gas Used:</span> {gasUsed}</p>
-      <p><span className="text-blue-400">Status:</span> {status ? "✅ Success" : "❌ Failed"}</p>
+    <div className="mt-6 bg-slate-900 rounded-xl p-4 overflow-hidden border border-slate-800">
+      <p className="text-[10px] uppercase font-bold text-slate-500 mb-2 tracking-widest">Recent Transaction</p>
+      <div className="flex flex-col gap-1">
+        <p className="text-xs font-mono text-blue-400 truncate">
+          <span className="text-slate-500 italic">Hash:</span> {txHash}
+        </p>
+        <p className={`text-xs font-bold ${status ? 'text-green-400' : 'text-red-400'}`}>
+          Status: {status ? "CONFIRMED" : "FAILED"}
+        </p>
+      </div>
     </div>
   );
 };

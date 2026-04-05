@@ -10,6 +10,11 @@ contract AdditionContract {
     number2 = _number2;
   }
 
+  function setNumbers(uint _n1, uint _n2) public {
+    number1 = _n1;
+    number2 = _n2;
+}
+
   function addition1() public view returns (uint){
     return number1 + number2;
   }
