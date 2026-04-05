@@ -7,14 +7,14 @@ import Navbar from './components/Navbar';
 import Home from './components/Home';
 
 // Exercise Pages
-import AdditionEx from './pages/AdditionEx';
-import CryptoEx from './pages/CryptoEx';
-import StringsEx from './pages/StringsEx';
-import SignEx from './pages/SignEx';
-import ParityEx from './pages/ParityEx';
-import ArraysEx from './pages/ArraysEx';
-import RectangleEx from './pages/RectangleEx';
-import PaymentEx from './pages/PaymentEx';
+// import AdditionEx from './pages/AdditionEx';
+// import CryptoEx from './pages/CryptoEx';
+// import StringsEx from './pages/StringsEx';
+// import SignEx from './pages/SignEx';
+// import ParityEx from './pages/ParityEx';
+// import ArraysEx from './pages/ArraysEx';
+// import RectangleEx from './pages/RectangleEx';
+// import PaymentEx from './pages/PaymentEx';
 
 function App() {
   const [web3, setWeb3] = useState(null);
@@ -54,14 +54,7 @@ function App() {
         <main className="max-w-5xl mx-auto px-6 py-10">
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/exercice-1" element={<AdditionEx web3={web3} account={account} />} />
-            <Route path="/exercice-2" element={<CryptoEx web3={web3} account={account} />} />
-            <Route path="/exercice-3" element={<StringsEx web3={web3} account={account} />} />
-            <Route path="/exercice-4" element={<SignEx web3={web3} account={account} />} />
-            <Route path="/exercice-5" element={<ParityEx web3={web3} account={account} />} />
-            <Route path="/exercice-6" element={<ArraysEx web3={web3} account={account} />} />
-            <Route path="/exercice-7" element={<RectangleEx web3={web3} account={account} />} />
-            <Route path="/exercice-8" element={<PaymentEx web3={web3} account={account} />} />
+            
           </Routes>
         </main>
       </div>
