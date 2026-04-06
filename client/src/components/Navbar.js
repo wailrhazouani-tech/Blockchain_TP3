@@ -29,9 +29,6 @@ const Navbar = ({ account, setAccount }) => {
         <Link to="/" className="text-xl font-black bg-gradient-to-r from-indigo-600 to-blue-500 bg-clip-text text-transparent">
           BLOCKCHAIN LAB
         </Link>
-        <Link to="/" className="text-sm font-semibold text-slate-500 hover:text-indigo-600 transition flex items-center gap-1">
-          Dashboard
-        </Link>
       </div>
 
       <div className="flex items-center gap-4">
