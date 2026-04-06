@@ -21,35 +21,37 @@ function App() {
   const [account, setAccount] = useState('');
 
   useEffect(() => {
-    const initWeb3 = async () => {
-      // 1. Check if MetaMask is installed
-      if (window.ethereum) {
-        const web3Instance = new Web3(window.ethereum);
-        try {
-          // 2. Request account access
-          const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-          setWeb3(web3Instance);
+  const init = async () => {
+    if (window.ethereum) {
+      const web3Instance = new Web3(window.ethereum);
+      setWeb3(web3Instance);
+
+      // Listen for account changes in MetaMask
+      window.ethereum.on('accountsChanged', (accounts) => {
+        if (accounts.length > 0) {
           setAccount(accounts[0]);
-        } catch (error) {
-          console.error("User denied account access");
+        } else {
+          setAccount('');
         }
-      } 
-      // 3. Fallback to local Ganache if MetaMask isn't used
-      else {
-        const provider = new Web3.providers.HttpProvider("http://127.0.0.1:7545");
-        const web3Instance = new Web3(provider);
-        setWeb3(web3Instance);
-        const accounts = await web3Instance.eth.getAccounts();
-        setAccount(accounts[0]);
-      }
-    };
-    initWeb3();
-  }, []);
+      });
+
+      window.ethereum.on('chainChanged', () => {
+        window.location.reload();
+      });
+
+      const accounts = await web3Instance.eth.getAccounts();
+      setAccount(accounts[0]);
+    }
+  };
+  init();
+}, []);
+
+
 
   return (
     <Router>
       <div className="min-h-screen bg-slate-50 font-sans text-slate-900">
-        <Navbar account={account} />
+        <Navbar account={account} setAccount={setAccount} />
         
         <main className="max-w-5xl mx-auto px-6 py-10">
           <Routes>

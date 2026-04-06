@@ -7,6 +7,7 @@ import TransactionInfo from '../components/TransactionInfo';
 const AdditionEx = ({ web3, account }) => {
   const [contract, setContract] = useState(null);
   const [contractAddr, setContractAddr] = useState('');
+  const [errorMsg, setErrorMsg] = useState('');
   const [stateVars, setStateVars] = useState({ n1: 0, n2: 0 });
   const [newVars, setNewVars] = useState({ n1: '', n2: '' });
   const [pureInputs, setPureInputs] = useState({ a: '', b: '' });
@@ -14,21 +15,48 @@ const AdditionEx = ({ web3, account }) => {
   const [lastReceipt, setLastReceipt] = useState(null); // Changed from hash to full receipt
 
   const loadState = async (instance) => {
-    const n1 = await instance.methods.number1().call();
-    const n2 = await instance.methods.number2().call();
-    setStateVars({ n1, n2 });
+    try {
+      const n1 = await instance.methods.number1().call();
+      const n2 = await instance.methods.number2().call();
+      setStateVars({ n1, n2 });
+      setErrorMsg('');
+    } catch (error) {
+      console.error('Failed to load contract state', error);
+      setErrorMsg('Failed to read contract state. Check that MetaMask is connected to Ganache (network 5777) and redeploy contracts if needed.');
+    }
   };
 
   useEffect(() => {
     if (web3) {
       const init = async () => {
-        const networkId = await web3.eth.net.getId();
-        const deployedNetwork = AdditionContract.networks[networkId];
-        if (deployedNetwork) {
+        try {
+          const networkId = await web3.eth.net.getId();
+          const deployedNetwork = AdditionContract.networks[networkId];
+
+          if (!deployedNetwork) {
+            setContract(null);
+            setContractAddr('');
+            setErrorMsg(`AdditionContract is not deployed on network ${networkId}. Run truffle migrate --reset --network development and use Ganache network 5777.`);
+            return;
+          }
+
+          const code = await web3.eth.getCode(deployedNetwork.address);
+          if (!code || code === '0x') {
+            setContract(null);
+            setContractAddr(deployedNetwork.address);
+            setErrorMsg('No contract bytecode found at the configured address. Redeploy contracts and refresh the page.');
+            return;
+          }
+
           const instance = new web3.eth.Contract(AdditionContract.abi, deployedNetwork.address);
           setContract(instance);
           setContractAddr(deployedNetwork.address);
-          loadState(instance);
+          await loadState(instance);
+        } catch (error) {
+          console.error('Failed to initialize contract', error);
+          setContract(null);
+          setContractAddr('');
+          setErrorMsg('Contract initialization failed. Verify Ganache is running and MetaMask is on the same network.');
         }
       };
       init();
@@ -37,6 +65,7 @@ const AdditionEx = ({ web3, account }) => {
 
   // UPDATE STATE (Creates a real transaction)
   const handleUpdateState = async () => {
+    if (!contract) return;
     if (newVars.n1 === '' || newVars.n2 === '') return;
     try {
       // We capture the full receipt here
@@ -45,17 +74,32 @@ const AdditionEx = ({ web3, account }) => {
       await loadState(contract);
     } catch (error) {
       console.error("Transaction failed", error);
+      setErrorMsg('Transaction failed. Ensure the connected account is unlocked and on the correct network.');
     }
   };
 
   const handleStoredAddition = async () => {
-    const res = await contract.methods.addition1().call();
-    setResult({ type: 'Sum of Stored Variables', value: res });
+    if (!contract) return;
+    try {
+      const res = await contract.methods.addition1().call();
+      setResult({ type: 'Sum of Stored Variables', value: res });
+      setErrorMsg('');
+    } catch (error) {
+      console.error('addition1 call failed', error);
+      setErrorMsg('addition1() call failed. ABI/address mismatch is likely; redeploy and reload.');
+    }
   };
 
   const handlePureAddition = async () => {
-    const res = await contract.methods.addition2(pureInputs.a, pureInputs.b).call();
-    setResult({ type: 'Sum of Manual Inputs', value: res });
+    if (!contract) return;
+    try {
+      const res = await contract.methods.addition2(pureInputs.a, pureInputs.b).call();
+      setResult({ type: 'Sum of Manual Inputs', value: res });
+      setErrorMsg('');
+    } catch (error) {
+      console.error('addition2 call failed', error);
+      setErrorMsg('addition2() call failed. ABI/address mismatch is likely; redeploy and reload.');
+    }
   };
 
   return (
@@ -76,6 +120,12 @@ const AdditionEx = ({ web3, account }) => {
 
       <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-200">
         <h2 className="text-2xl font-bold text-indigo-800 mb-6 border-b pb-4">Exercise 1: Addition & Setters</h2>
+
+        {errorMsg && (
+          <div className="mb-6 rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+            {errorMsg}
+          </div>
+        )}
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* WRITE SECTION */}
