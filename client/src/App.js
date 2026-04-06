@@ -9,7 +9,7 @@ import Home from './components/Home';
 // Exercise Pages
 import AdditionEx from './pages/AdditionEx';
 import CryptoEx from './pages/CryptoEx';
-// import StringsEx from './pages/StringsEx';
+import StringsEx from './pages/StringsEx';
 // import SignEx from './pages/SignEx';
 // import ParityEx from './pages/ParityEx';
 // import ArraysEx from './pages/ArraysEx';
@@ -58,6 +58,7 @@ function App() {
              <Route path="/" element={<Home />} />
             <Route path="/exercice-1" element={<AdditionEx web3={web3} account={account} />} />
             <Route path="/exercice-2" element={<CryptoEx web3={web3} account={account} />} />
+            <Route path="/exercice-3" element={<StringsEx web3={web3} account={account} />} />
             
           </Routes>
         </main>
