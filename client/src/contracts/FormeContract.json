@@ -99,7 +99,7 @@
   "sourceMap": "",
   "deployedSourceMap": "",
   "source": "// SPDX-License-Identifier: MIT\npragma solidity >=0.4.22 <0.9.0;\n\nabstract contract FormeContract {\n  uint public x;\n  uint public y;\n\n  constructor(uint _x, uint _y) {\n    x = _x;\n    y = _y;\n  }\n\n  function deplacerForme(uint dx, uint dy) public {\n    x = dx;\n    y = dy;\n  }\n  function afficheXY() public view returns (uint, uint) {\n    return (x, y);\n  }\n\n  function afficheInfos() public virtual pure returns (string memory) {\n    return \"Je suis une forme\";\n  }\n  function surface() public virtual view returns (uint);\n}",
-  "sourcePath": "C:\\Users\\HP\\Desktop\\MUS\\BlockChain\\TP\\TP3\\contracts\\FormeContract.sol",
+  "sourcePath": "/app/contracts/FormeContract.sol",
   "ast": {
     "absolutePath": "project:/contracts/FormeContract.sol",
     "exportedSymbols": {
@@ -833,7 +833,7 @@
   },
   "networks": {},
   "schemaVersion": "3.4.16",
-  "updatedAt": "2026-04-06T18:45:57.891Z",
+  "updatedAt": "2026-04-17T18:52:25.149Z",
   "devdoc": {
     "kind": "dev",
     "methods": {},

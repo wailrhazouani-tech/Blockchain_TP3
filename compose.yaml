@@ -1,0 +1,31 @@
+services:
+  # 1. THE BLOCKCHAIN (Ganache)
+  ganache:
+    image: trufflesuite/ganache:latest
+    ports:
+      - "7545:8545" # Map Ganache's internal 8545 to your Fedora 7545
+    command: 
+      - "--wallet.seed"
+      - "marrow muscle carpet hello" # Keep seed consistent for your MetaMask accounts
+      - "--chain.networkId"
+      - "5777"
+      - "--host"
+      - "0.0.0.0" # Ensure it listens to requests from the other container
+
+  # 2. THE DEVELOPMENT ENVIRONMENT (Truffle + React)
+  truffle-app:
+    build:
+      context: .
+      dockerfile: Containerfile
+    depends_on:
+      - ganache
+    volumes:
+      - .:/app:Z                # Bind Mount with SELinux relabeling
+      - /app/node_modules       # Internal volume for root deps
+      - /app/client/node_modules # Internal volume for React deps
+    ports:
+      - "3000:3000"
+    stdin_open: true
+    tty: true
+    environment:
+      - WATCHPACK_POLLING=true  # Critical for Fedora/Podman hot-reload

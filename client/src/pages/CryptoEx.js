@@ -87,7 +87,7 @@ const CryptoEx = ({ web3, account }) => {
           {/* Input Section */}
           <div className="space-y-2">
             <label className="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1">
-              Enter Amount
+              Enter Amount (unsigned integer)
             </label>
             <input 
               type="number" 

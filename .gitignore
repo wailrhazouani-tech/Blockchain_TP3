@@ -1,0 +1,43 @@
+# --- Blockchain / Truffle Specific ---
+# Ignore compiled contract artifacts
+build/
+# If you prefer users to migrate their own contracts locally:
+client/src/contracts/*.json
+
+# --- Javascript / Node Specific ---
+node_modules/
+client/node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnp/
+.pnp.js
+
+# --- React / Frontend Specific ---
+client/build/
+client/.env.local
+client/.env.development.local
+client/.env.test.local
+client/.env.production.local
+
+# --- Environment & Security ---
+.env
+.secret
+.mnemonic
+
+# --- System & IDEs ---
+.DS_Store
+.vscode/
+.idea/
+*.swp
+*.bak
+
+# --- Podman / Docker Specific ---
+# Ignore local environment overrides for containers
+.env.container
+docker-compose.override.yml
+podman-compose.override.yml
+
+# Ignore local container data volumes (if you map any)
+_data/
+.containers/

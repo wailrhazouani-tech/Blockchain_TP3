@@ -8,11 +8,17 @@ contract PaymentContract {
     recipient = _recipient;
   }
 
-  function receivePayment() public payable {
-    require(msg.value > 0, "!!!!!!!!!! You should send more than 0 Wei !!!!!!!!!!");
+  // ADD THIS FUNCTION
+  function setRecipient(address _newRecipient) public {
+    recipient = _newRecipient;
   }
+
+  function receivePayment() public payable {
+    require(msg.value > 0, "Send more than 0");
+  }
+
   function withdraw() public {
-    require(msg.sender == recipient, "!!!!!!!!!! Recipient address incorrect !!!!!!!!!!");
+    require(msg.sender == recipient, "Only recipient can withdraw");
     payable(recipient).transfer(address(this).balance);
   }
 }

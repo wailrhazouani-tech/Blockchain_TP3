@@ -10,7 +10,7 @@ const Home = () => {
     { id: 5, title: "Parity Checker", desc: "Even or Odd calculation" },
     { id: 6, title: "Array Management", desc: "Storage and retrieval of lists" },
     { id: 7, title: "Geometry OOP", desc: "Inheritance with Rectangle.sol" },
-    { id: 8, title: "Global Variables", desc: "Using msg.sender and msg.value" },
+    { id: 8, title: "Payment Handling and Global Variables", desc: "Using msg.sender and msg.value" },
   ];
 
   return (
